@@ -8,7 +8,24 @@
 
   <body>
     <canvas width="500" height="500" id="canvas"></canvas>
-    <br />
-    <button id="clear">Clear</button>
+
+    <div>
+      <label for="">Smoothening Technique: </label>
+      <input id="no-smoothening" type="radio" name="smoothening" value="none" checked/>
+      <label for="no-smoothening">None</label>
+      <input id="smart-smoothening" type="radio" name="smoothening" value="none"/>
+      <label for="smart-smoothening">Smart</label>
+      <input id="low-pass-smoothening" type="radio" name="smoothening" value="none"/>
+      <label for="low-pass-smoothening">Low Pass</label>
+    </div>
+
+    <div>
+      <input type="text" id="trace-path-name" />
+      <button id="trace">Trace</button>
+    </div>
+    <div>
+      <input type="text" id="save-path-name" />
+      <button id="save">Save</button>
+    </div>
   </body>
 </html>
