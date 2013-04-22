@@ -33,3 +33,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+/assets/javascripts/*.js
+/assets/stylesheets/*.css
+.DS_Store
