@@ -37,3 +37,4 @@ nosetests.xml
 /assets/javascripts/*.js
 /assets/stylesheets/*.css
 .DS_Store
+/.sass-cache
