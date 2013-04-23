@@ -1,5 +1,6 @@
 painting = false
 userPath = []
+retrievedPath = []
 
 getXY = (evt) ->
   [ evt.pageX - evt.target.offsetLeft,
@@ -14,6 +15,18 @@ trace = (context, path, colour) ->
     context.lineTo x, y
     context.stroke()
   context.strokeStyle = oldStyle
+
+diff = (path1, path2) ->
+  sse = (p1, p2) ->
+    (p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1])
+  sum = 0
+  i = 0
+  while i < Math.min(path1.length, path2.length)
+    p1 = path1[0]
+    p2 = path2[0]
+    sum += sse(p1, p2)
+    i++
+  return sum
 
 $ ->
   context = $('#canvas')[0].getContext('2d')
@@ -60,5 +73,10 @@ $ ->
       dataType: "json"
     ).done( (data) ->
       trace context, data.path, '#FF00FF'
+      retrievedPath = data.path
     )
 
+  $('#diff').on 'click', (evt) ->
+    evt.preventDefault()
+
+    $('#diff-display').text(diff(userPath, retrievedPath))
