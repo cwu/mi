@@ -69,7 +69,22 @@ $ ->
       userPath.push [nx, ny]
       [lx, ly] = [nx, ny]
     else
-      console.log 'stuff'
+      $.ajax(
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url : '/smooth'
+        data : JSON.stringify({x:lx+dx, y:ly+dy})
+        dataType: "json"
+      ).done( (data) ->
+        console.log data
+        nx = (parseInt(data.x, 10)) / 2
+        ny = (parseInt(data.y, 10)) / 2
+
+        context.lineTo nx, ny
+        context.stroke()
+        userPath.push [nx, ny]
+        [lx, ly] = [nx, ny]
+      )
 
   $('#save').on 'click', (evt) ->
     evt.preventDefault()

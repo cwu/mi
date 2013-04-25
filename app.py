@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 
 import redis
 import json
@@ -30,6 +30,15 @@ def path_create():
 def path_view(name):
     with open(os.path.join('paths', '%s.json' % name), 'r') as f:
         return f.read()
+
+@app.route('/smooth', methods=['POST'])
+def smooth():
+    x = request.json['x'] / 2
+    y = request.json['y']
+
+    print x, y
+
+    return jsonify({ 'x'  : x, 'y' : y})
 
 if __name__ == '__main__':
     app.run(debug=True)
