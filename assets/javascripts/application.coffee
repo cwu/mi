@@ -16,23 +16,24 @@ trace = (context, path, colour) ->
     context.stroke()
   context.strokeStyle = oldStyle
 
-diff = (path1, path2) ->
-  sse = (p1, p2) ->
-    (p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1])
+dist2 = (p1, p2) -> (p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1])
+sse = (point, ref) -> _.min(_.map(ref, (p) -> dist2(p, point)))
+
+diff = (path, ref) ->
   sum = 0
-  i = 0
-  while i < Math.min(path1.length, path2.length)
-    p1 = path1[0]
-    p2 = path2[0]
-    sum += sse(p1, p2)
-    i++
-  return sum
+  for point in path
+    sum += sse(point, ref)
+  return sum / path.length
 
 $ ->
   context = $('#canvas')[0].getContext('2d')
+  [mx, my] = [null, null]
+  [lx, ly] = [null, null]
   $('#canvas').on 'mousedown', (evt) ->
     evt.preventDefault()
     [x, y] = getXY evt
+    [mx, my] = [x, y]
+    [lx, ly] = [x, y]
     context.beginPath()
     context.moveTo x, y
     context.stroke()
@@ -45,9 +46,30 @@ $ ->
   $('#canvas').on 'mousemove', (evt) ->
     return unless painting
     [x, y] = getXY evt
-    context.lineTo x, y
-    context.stroke()
-    userPath.push [x, y]
+    dx = x - mx
+    dy = y - my
+
+    [mx, my] = [x, y]
+
+
+    if $('#no-smoothening').is(':checked')
+      nx = lx + dx
+      ny = ly + dy
+
+      context.lineTo nx, ny
+      context.stroke()
+      userPath.push [nx, ny]
+      [lx, ly] = [nx, ny]
+    else if $('#low-pass-smoothening').is(':checked')
+      nx = lx + dx / 3
+      ny = ly + dy / 3
+
+      context.lineTo nx, ny
+      context.stroke()
+      userPath.push [nx, ny]
+      [lx, ly] = [nx, ny]
+    else
+      console.log 'stuff'
 
   $('#save').on 'click', (evt) ->
     evt.preventDefault()
