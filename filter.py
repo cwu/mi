@@ -28,7 +28,7 @@ print input
 target = input
 
 # Create network with 2 layers
-net = nl.net.newelm([[-8, 8], [-8, 8]], [10, 1], [nl.trans.TanSig(), nl.trans.PureLin()])
+net = nl.net.newelm([[-8, 8], [-8, 8]], [10, 2], [nl.trans.TanSig(), nl.trans.PureLin()])
 # Set initialized functions and init
 net.layers[0].initf = nl.init.InitRand([-0.1, 0.1], 'wb')
 net.layers[1].initf = nl.init.InitRand([-0.1, 0.1], 'wb')
@@ -46,8 +46,8 @@ pl.xlabel('Epoch number')
 pl.ylabel('Train error (default MSE)')
 
 pl.subplot(212)
-pl.plot(target.reshape(80))
-pl.plot(output.reshape(80))
+pl.plot(target)
+pl.plot(output)
 pl.legend(['train target', 'net output'])
 pl.show()
 pl.savefig('test.png')
