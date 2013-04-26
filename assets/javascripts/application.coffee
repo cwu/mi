@@ -98,6 +98,21 @@ $ ->
       data: JSON.stringify { name: name, path: userPath }
       dataType: "json"
 
+  $('#trace-user').on 'click', (evt) ->
+    evt.preventDefault()
+    name = $('#trace-user-path-name').val()
+    return if name.length == 0
+
+    $.ajax(
+      type: "GET",
+      contentType: "application/json; charset=utf-8",
+      url: "/paths/#{ name }",
+      dataType: "json"
+    ).done( (data) ->
+      trace context, data.path, '#000000'
+      userPath = data.path
+    )
+
   $('#trace').on 'click', (evt) ->
     evt.preventDefault()
     name = $('#trace-path-name').val()
