@@ -3,19 +3,24 @@ import numpy as np
 import sys
 import json
 
-if len(sys.argv) != 3:
-  print "Usage: " + sys.argv[0] + " in.json des.json"
+if len(sys.argv) != 4:
+  print "Usage: " + sys.argv[0] + " ref.json train.json in.json"
   exit(1)
 
 # Read json input
-inp = json.loads(open(sys.argv[1]).read())
-des = json.loads(open(sys.argv[2]).read())
+ref = json.loads(open(sys.argv[1]).read())
+trn = json.loads(open(sys.argv[2]).read())
+inp = json.loads(open(sys.argv[3]).read())
 
 # Make lists of deltas
+target = ref['path']
+target = [[x[0] - target[i - 1][0], x[1] - target[i - 1][1]] for i, x in enumerate(target)][1:]
+train = trn['path']
+train = [[x[0] - train[i - 1][0], x[1] - train[i - 1][1]] for i, x in enumerate(train)][1:]
+train = train[:len(target)]
 input = inp['path']
 input = [[x[0] - input[i - 1][0], x[1] - input[i - 1][1]] for i, x in enumerate(input)][1:]
-target = des['path']
-target = [[x[0] - target[i - 1][0], x[1] - target[i - 1][1]] for i, x in enumerate(target)][1:]
+input = input[:len(target)]
 
 # Create network with 2 layers
 net = nl.net.newelm([[-8, 8], [-8, 8]], [20, 2], [nl.trans.TanSig(), nl.trans.PureLin()])
@@ -24,7 +29,7 @@ net.layers[0].initf = nl.init.InitRand([-0.1, 0.1], 'wb')
 net.layers[1].initf = nl.init.InitRand([-0.1, 0.1], 'wb')
 net.init()
 # Train network
-error = net.train(target, target, epochs=1000, show=100, goal=0.0001)
+error = net.train(train, target, epochs=1000, show=100, goal=0.0001)
 # Simulate network
 output = net.sim(input)
 
